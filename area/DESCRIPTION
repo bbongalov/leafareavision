@@ -1,0 +1,18 @@
+Package: area
+Type: Package
+Title: Rapid Accurate Assessment of Leaf Areas
+Version: 0.1.0
+Author: as.person(c(
+    "C. E. Timothy Paine <cetpaine@gmail.com> [aut, cre]", 
+    "Boris Bongalov <b.bongalov@gmail.com> [aut]",
+    "Sabine Both <sabineboth.mail@gmail.com> [aut]"
+  ))
+Maintainer: C. E. Timothy Paine <cetpaine@gmail.com>
+Description: Assess the surface area of plant leaves, given images. 
+    The package includes functions to preprocess the images.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+  parallel
+RoxygenNote: 7.0.2

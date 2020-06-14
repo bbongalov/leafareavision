@@ -1,0 +1,30 @@
+#! /usr/bin/env python3
+
+import argparse
+from leafareavision import batch, config
+import multiprocessing
+
+parser = argparse.ArgumentParser(description='Estimate the area of a scanned leaves in batch')
+parser.add_argument('path', type = str, help=' folder to list images in; specifying file format (e.g. *.jpg) is expected')
+parser.add_argument('-workers', type = int, help=' how many cores to use - default is all available but one', default= config['workers'])
+parser.add_argument('-threshold', type = int, help='  a value between 0 (black) and 255 (white) for classification of background and leaf pixels', default=config['threshold'])
+parser.add_argument('-cut_off', type = int, help=' integer; clusters with number of pixels lower than this value will be discarded', default = config['cut_off'])
+parser.add_argument('-output_dir', type = str, help=' path, if specified, the classified image will be saved there', default=False)
+parser.add_argument('-crop_top', type = int, help=' four integers; number of pixels to be removed form (top, bottom, left, right) of the image', default=0)
+parser.add_argument('-crop_bottom', type = int, help=' four integers; number of pixels to be removed form (top, bottom, left, right) of the image', default=0)
+parser.add_argument('-crop_left', type = int, help=' four integers; number of pixels to be removed form (top, bottom, left, right) of the image', default=0)
+parser.add_argument('-crop_right', type = int, help=' four integers; number of pixels to be removed form (top, bottom, left, right) of the image', default=0)
+parser.add_argument('-separate', help=' boolean; if true the total area will be returned; otherwise each segment will be returned separately', action='store_false')
+parser.add_argument('-res', type = int, help=' image resolution; if False the resolution will be read from the exif tag', default=0)
+parser.add_argument('-csv', type = str, help=' path to a csv file to save the output', default=False)
+
+args = parser.parse_args()
+
+crop = (args.crop_top, args.crop_bottom, args.crop_left, args.crop_right)
+
+area = batch(args.path, args.workers, args.threshold, args.cut_off, args.output_dir, crop, args.separate, args.res)
+
+if args.csv:
+    area.to_csv(args.csv)
+else:
+    print(area)

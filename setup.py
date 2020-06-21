@@ -1,38 +1,31 @@
-from setuptools import setup
+#!/usr/bin/env python3
 import sys
 
+from distutils.core import setup
+
+name = "leafcalc"
+
+# Python 2.4 or later needed
+if sys.version_info < (3, 7, 0, 'final', 0):
+    raise RuntimeError(f'Python 3.7 or later is required, you have {sys.version_info}')
+
+
 setup(
-    name='area',
-    version='0.1.2',
-    author='Boris Bongalov',
+    name=name,
+    version='0.9.0',
+    description='Estimate the area of scanned images.',
+    include_package_data=True,
+    url='https://github.com/bbongalov',
+    author='Boris Bonaglov',
     author_email='boris@bongalov.com',
-    packages=['leafareavision'],
-    entry_points={
-        'console_scripts': [
-            'area=LAV_assess:main',
-            'area=LAV_pp:main'],
-    }
-    url='https://github.com/bbongalov/leafareavision',
-    license='LICENSE',
-    classifiers=[
-        'Development Status :: 3 - Alpha',
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3'
-    ],
-    description='Quick and accurate estimation of the area of scanned leaves.',
+    license='MIT License',
+    keywords='leaf area ecology plant science automation image analysis',
+    packages=['python-leafcalc'],
+    scripts=['./bin/LeafCalc.py'],
     install_requires=[
         "numpy",
         "pandas",
-	    "opencv-python",
-	    "exif",
-	    "scikit-image",
-        "glob",
-        "multiprocessing",
-        "argparse",
-        "PIL"
-    ],
-    python_requires='>=3.5',
-    package_data ={
-        'area': ['data/BEL-T20-B1S-L3.jpg']
-    }
-)
+        "opencv-python",
+        "exif",
+        "scikit-image"]
+    )

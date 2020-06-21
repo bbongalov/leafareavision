@@ -7,7 +7,7 @@ Boris Bongalov, Tim C.E Paine, Sabine Both
 
 import multiprocessing
 import os
-from glob import glob
+import tempfile
 
 import cv2
 import numpy as np
@@ -15,7 +15,7 @@ import pandas as pd
 from exif import Image
 from pandas.core.frame import DataFrame
 from skimage import measure
-import tempfile
+
 
 class EstimateLeafArea:
     """Calculate leaf area."""
@@ -125,16 +125,17 @@ class EstimateLeafArea:
                 return pd.DataFrame(data={'filename': [img] * areas.shape[0], 'Area': areas})
         elif os.path.isdir(img):
             # obtain a list of images
-            images = glob(img, recursive=True)
+            images = os.listdir(img)
+            images = [os.path.join(img, i) for i in images]
 
             # create a workers pool and start processing
             pool = multiprocessing.Pool(self.workers)
-            results = pool.map_async(self.estimate, images)
+            results = pool.map(self.estimate, images)
             pool.close()
             pool.join()
 
             # unify the results into a single dataframe
-            return pd.concat(results._value)
+            return pd.concat(results)
         else:
             raise ValueError(f'Your input {img} needs to be a path to an image or a directory.')
 
@@ -192,14 +193,15 @@ class EstimateLeafArea:
                 scan[0:self.red_scale_pixels, 0:self.red_scale_pixels, 2] = 255  # red channel
 
             # file name
-            fname = os.path.basename(img)
-            fname = f'{os.path.splitext(fname)[0]}.jpg'
-            fname = os.path.join(os.path.expanduser(self.output_dir), fname)
+            file_name = os.path.basename(img)
+            file_name = f'{os.path.splitext(file_name)[0]}.jpg'
+            file_name = os.path.join(os.path.expanduser(self.output_dir), file_name)
 
             # save as jpg
-            cv2.imwrite(fname, scan)
+            cv2.imwrite(file_name, scan)
         elif os.path.isdir(img):
-            images = glob(img, recursive=True)
+            images = os.listdir(img)
+            images = [os.path.join(img, i) for i in images]
 
             # create a workers pool and start processing
             pool = multiprocessing.Pool(self.workers)

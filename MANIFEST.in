@@ -1,1 +1,1 @@
-recursive-include python-leafcalc/static *
+include *
